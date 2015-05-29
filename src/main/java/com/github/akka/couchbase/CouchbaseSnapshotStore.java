@@ -18,7 +18,8 @@ import scala.concurrent.Promise;
  */
 public class CouchbaseSnapshotStore extends SnapshotStore {
     private static final Logger log = LoggerFactory.getLogger(CouchbaseSnapshotStore.class);
-    AkkaPersistenceImpl akkaPersistenceImpl;
+
+    protected AkkaPersistenceImpl akkaPersistenceImpl;
 
     public CouchbaseSnapshotStore() {
         this.akkaPersistenceImpl = AkkaPersistenceImpl.getInstance();

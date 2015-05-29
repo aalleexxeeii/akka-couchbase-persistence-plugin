@@ -19,7 +19,7 @@ import scala.concurrent.Promise;
 public class CouchbaseAsyncWriteJournal extends AsyncWriteJournal {
     private static final Logger log = LoggerFactory.getLogger(CouchbaseAsyncWriteJournal.class);
 
-    AkkaPersistenceImpl akkaPersistenceImpl;
+    protected AkkaPersistenceImpl akkaPersistenceImpl;
 
     public CouchbaseAsyncWriteJournal() {
         this.akkaPersistenceImpl = AkkaPersistenceImpl.getInstance();

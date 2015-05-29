@@ -51,12 +51,12 @@ public class AkkaPersistenceImpl {
 
     private final Logger log = LoggerFactory.getLogger(AkkaPersistenceImpl.class);
 
-    CouchbaseAccessLayer couchbaseAccessLayer;
-    int ttl;
-    int operationTimeout;
-    Gson gson;
-    private String idPrefix;
-    private int maxRetries;
+    protected CouchbaseAccessLayer couchbaseAccessLayer;
+    protected int ttl;
+    protected int operationTimeout;
+    protected Gson gson;
+    protected String idPrefix;
+    protected int maxRetries;
 
     private int getExpiryInUnixTime(int ttl) {
         if (ttl == 0)
