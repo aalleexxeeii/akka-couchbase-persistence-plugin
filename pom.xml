@@ -6,13 +6,11 @@
 
     <groupId>com.github.yousef-fadila</groupId>
     <artifactId>akka-couchbase-persistence_${scala.cross.version}</artifactId>
-    <version>1.0</version>
+    <version>1.0.1-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <scala.version>2.10.5</scala.version>
         <scala.cross.version>2.10</scala.cross.version>
-        <akka.version>2.3.9</akka.version>
     </properties>
 
     <dependencies>
@@ -78,17 +76,42 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 
     <profiles>
         <profile>
-            <id>eleven</id>
+            <id>scala-2.10</id>
+            <properties>
+                <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+                <scala.version>2.10.5</scala.version>
+                <scala.cross.version>2.10</scala.cross.version>
+                <akka.version>2.3.9</akka.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>scala-2.11</id>
             <activation>
-                <property>
-                    <name>scala.cross.version</name>
-                    <value>2.11</value>
-                </property>
+                <activeByDefault>true</activeByDefault>
             </activation>
+            <properties>
+                <scala.version>2.11.6</scala.version>
+                <scala.cross.version>2.11</scala.cross.version>
+                <akka.version>2.3.11</akka.version>
+            </properties>
             <dependencies>
                 <dependency>
                     <groupId>org.scala-lang.modules</groupId>
