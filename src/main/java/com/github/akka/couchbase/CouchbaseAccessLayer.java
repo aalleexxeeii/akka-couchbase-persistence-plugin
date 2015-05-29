@@ -4,11 +4,12 @@ import com.couchbase.client.java.*;
 import com.couchbase.client.java.document.BinaryDocument;
 import com.couchbase.client.java.document.Document;
 import com.couchbase.client.java.document.RawJsonDocument;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rx.Observable;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -41,8 +42,12 @@ public class CouchbaseAccessLayer {
     private PersistTo persistTo;
 
     private CouchbaseAccessLayer() {
+        this(ConfigFactory.load().getConfig("couchbase-persistence-v2.couchBase"));
+    }
 
-        loadConfig();
+    protected CouchbaseAccessLayer(Config cfg) {
+        Config config = cfg.withFallback(ConfigFactory.load("com/github/akka/couchbase/defaults"));
+        loadConfig(config);
         try {
             connect();
         } catch (Exception e) {
@@ -50,17 +55,14 @@ public class CouchbaseAccessLayer {
         }
     }
 
-    private void loadConfig() {
+    private void loadConfig(Config config) {
         log.debug("CouchbaseAccessLayer loadConfig");
         try {
-            ConfigManager configManager = ConfigManager.getInstance();
-
-            nodes = Arrays.asList(configManager.getString("couchbase-persistence-v2.couchBase.servers").split(","));
-            bucketName = configManager.getString("couchbase-persistence-v2.couchBase.bucketName");
-            bucketPassword = configManager.getString("couchbase-persistence-v2.couchBase.pass");
-            persistTo = PersistTo.valueOf(configManager.getString("couchbase-persistence-v2.couchBase.persistTo"));
-            replicateTo = ReplicateTo.valueOf(configManager.getString("couchbase-persistence-v2.couchBase.replicateTo"));
-
+            nodes = config.getStringList("servers");
+            bucketName = config.getString("bucketName");
+            bucketPassword = config.getString("pass");
+            persistTo = PersistTo.valueOf(config.getString("persistTo"));
+            replicateTo = ReplicateTo.valueOf(config.getString("replicateTo"));
         } catch (Exception e) {
             log.error("failed to loadConfig to couchbase cluster", e);
             throw new RuntimeException("failed to loadConfig to couchbase cluster " , e );

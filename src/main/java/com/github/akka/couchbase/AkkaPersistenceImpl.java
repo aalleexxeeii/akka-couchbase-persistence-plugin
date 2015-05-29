@@ -19,6 +19,8 @@ import com.github.akka.couchbase.entities.JournalContainer;
 import com.github.akka.couchbase.entities.SnapshotContainer;
 import com.github.akka.couchbase.entities.SnapshotMetadataEntity;
 import com.google.gson.Gson;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rx.Observable;
@@ -66,13 +68,17 @@ public class AkkaPersistenceImpl {
     }
 
     private AkkaPersistenceImpl() {
+        this(ConfigFactory.load().getConfig("couchbase-persistence-v2.couchBase"));
+    }
+
+    public AkkaPersistenceImpl(Config config) {
         this.gson = new Gson();
         couchbaseAccessLayer = CouchbaseAccessLayer.getInstance();
-        ConfigManager config = ConfigManager.getInstance();
-        ttl = config.getInt("couchbase-persistence-v2.couchBase.expiryInSeconds", 0);
-        operationTimeout = config.getInt("couchbase-persistence-v2.couchBase.operationTimeout", 5000);
-        maxRetries = config.getInt("couchbase-persistence-v2.couchBase.maxRetries", 5);
-        idPrefix = config.getString("couchbase-persistence-v2.couchBase.idPrefix");
+        Config cfg = config.withFallback(ConfigFactory.load("com/github/akka/couchbase/defaults"));
+        ttl = cfg.getInt("expiryInSeconds");
+        operationTimeout = cfg.getInt("operationTimeout");
+        maxRetries = cfg.getInt("maxRetries");
+        idPrefix = cfg.getString("idPrefix");
         if (idPrefix == null) {
             idPrefix = "";
         }
