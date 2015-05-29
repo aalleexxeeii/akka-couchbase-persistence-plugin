@@ -14,25 +14,41 @@ import com.couchbase.client.java.document.RawJsonDocument;
 import com.couchbase.client.java.error.DocumentAlreadyExistsException;
 import com.couchbase.client.java.error.DocumentDoesNotExistException;
 import com.couchbase.client.java.util.Blocking;
+import com.github.akka.couchbase.entities.Journal;
+import com.github.akka.couchbase.entities.JournalContainer;
+import com.github.akka.couchbase.entities.SnapshotContainer;
+import com.github.akka.couchbase.entities.SnapshotMetadataEntity;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import rx.Observable;
 import rx.functions.Func2;
 import scala.collection.JavaConversions;
 import scala.collection.mutable.Buffer;
-import com.github.akka.couchbase.entities.*;
+
 import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
-import rx.Observable;
 /**
  * Implementation of AKKA persistence of Journal.
  * @author Yousef Fadila
  */
-public enum AkkaPersistenceImpl {
-    INSTANCE();
+public class AkkaPersistenceImpl {
+    private static AkkaPersistenceImpl _instance;
+
+    public static AkkaPersistenceImpl getInstance() {
+        if (_instance == null) {
+            synchronized (AkkaPersistenceImpl.class) {
+                if (_instance == null) {
+                    _instance = new AkkaPersistenceImpl();
+                }
+            }
+        }
+        return _instance;
+    }
+
     private final Logger log = LoggerFactory.getLogger(AkkaPersistenceImpl.class);
 
     CouchbaseAccessLayer couchbaseAccessLayer;
@@ -51,11 +67,12 @@ public enum AkkaPersistenceImpl {
 
     private AkkaPersistenceImpl() {
         this.gson = new Gson();
-        couchbaseAccessLayer = CouchbaseAccessLayer.INSTANCE;
-        ttl = ConfigManager.INSTANCE.getInt("couchbase-persistence-v2.couchBase.expiryInSeconds", 0);
-        operationTimeout = ConfigManager.INSTANCE.getInt("couchbase-persistence-v2.couchBase.operationTimeout", 5000);
-        maxRetries = ConfigManager.INSTANCE.getInt("couchbase-persistence-v2.couchBase.maxRetries", 5);
-        idPrefix = ConfigManager.INSTANCE.getString("couchbase-persistence-v2.couchBase.idPrefix");
+        couchbaseAccessLayer = CouchbaseAccessLayer.getInstance();
+        ConfigManager config = ConfigManager.getInstance();
+        ttl = config.getInt("couchbase-persistence-v2.couchBase.expiryInSeconds", 0);
+        operationTimeout = config.getInt("couchbase-persistence-v2.couchBase.operationTimeout", 5000);
+        maxRetries = config.getInt("couchbase-persistence-v2.couchBase.maxRetries", 5);
+        idPrefix = config.getString("couchbase-persistence-v2.couchBase.idPrefix");
         if (idPrefix == null) {
             idPrefix = "";
         }

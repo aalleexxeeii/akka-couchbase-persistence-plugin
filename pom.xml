@@ -10,7 +10,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <scala.cross.version>2.10</scala.cross.version>
+        <scala.cross.version>2.11</scala.cross.version>
     </properties>
 
     <dependencies>

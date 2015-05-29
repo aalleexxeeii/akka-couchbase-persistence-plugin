@@ -15,8 +15,19 @@ import java.util.List;
  * @author Yousef Fadila
  */
 
-public enum CouchbaseAccessLayer {
-    INSTANCE();
+public class CouchbaseAccessLayer {
+    private static CouchbaseAccessLayer _instance;
+
+    public static CouchbaseAccessLayer getInstance() {
+        if (_instance == null) {
+            synchronized (CouchbaseAccessLayer.class) {
+                if (_instance == null) {
+                    _instance = new CouchbaseAccessLayer();
+                }
+            }
+        }
+        return _instance;
+    }
 
     private final Logger log = LoggerFactory.getLogger(CouchbaseAccessLayer.class);
 
@@ -42,7 +53,7 @@ public enum CouchbaseAccessLayer {
     private void loadConfig() {
         log.debug("CouchbaseAccessLayer loadConfig");
         try {
-            ConfigManager configManager = ConfigManager.INSTANCE;
+            ConfigManager configManager = ConfigManager.getInstance();
 
             nodes = Arrays.asList(configManager.getString("couchbase-persistence-v2.couchBase.servers").split(","));
             bucketName = configManager.getString("couchbase-persistence-v2.couchBase.bucketName");

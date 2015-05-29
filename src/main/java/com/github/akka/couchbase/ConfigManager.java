@@ -8,8 +8,19 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by youseff on 3/22/2015.
  */
-public enum ConfigManager {
-    INSTANCE;
+public class ConfigManager {
+    private static ConfigManager _instance;
+
+    public static ConfigManager getInstance() {
+        if (_instance == null) {
+            synchronized (ConfigManager.class) {
+                if (_instance == null) {
+                    _instance = new ConfigManager();
+                }
+            }
+        }
+        return _instance;
+    }
 
     private final Logger log = LoggerFactory.getLogger(ConfigManager.class);
 
