@@ -22,7 +22,11 @@ public class CouchbaseAsyncWriteJournal extends AsyncWriteJournal {
     protected AkkaPersistenceImpl akkaPersistenceImpl;
 
     public CouchbaseAsyncWriteJournal() {
-        this.akkaPersistenceImpl = AkkaPersistenceImpl.getInstance();
+        this(AkkaPersistenceImpl.getInstance());
+    }
+
+    protected CouchbaseAsyncWriteJournal(AkkaPersistenceImpl akkaPersistenceImpl) {
+        this.akkaPersistenceImpl = akkaPersistenceImpl;
     }
 
     @Override
