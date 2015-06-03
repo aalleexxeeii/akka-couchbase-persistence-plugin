@@ -125,7 +125,6 @@ public class CouchbaseAccessLayer {
         if (bucket == null) {
             connect();
         }
-        System.out.println("insertDocument");
         return bucket.async().insert(doc, persistTo, replicateTo);
     }
 
@@ -133,7 +132,6 @@ public class CouchbaseAccessLayer {
         if (bucket == null) {
             connect();
         }
-        System.out.println("replaceDocument");
         return bucket.async().replace(doc, persistTo, replicateTo);
     }
 
