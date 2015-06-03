@@ -22,6 +22,10 @@ public class CouchbaseSnapshotStore extends SnapshotStore {
     protected AkkaPersistenceImpl akkaPersistenceImpl;
 
     public CouchbaseSnapshotStore() {
+        this(AkkaPersistenceImpl.getInstance());
+    }
+
+    public CouchbaseSnapshotStore(AkkaPersistenceImpl akkePersistenceImpl) {
         this.akkaPersistenceImpl = AkkaPersistenceImpl.getInstance();
     }
 
