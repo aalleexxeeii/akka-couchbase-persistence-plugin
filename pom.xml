@@ -11,6 +11,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <scala.cross.version>2.11</scala.cross.version>
+        <akka.version>2.3.9</akka.version>
     </properties>
 
     <dependencies>
