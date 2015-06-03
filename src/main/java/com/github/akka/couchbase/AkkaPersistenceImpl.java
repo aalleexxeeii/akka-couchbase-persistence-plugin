@@ -68,13 +68,14 @@ public class AkkaPersistenceImpl {
     }
 
     private AkkaPersistenceImpl() {
-        this(ConfigFactory.load().getConfig("couchbase-persistence-v2.couchBase"));
+        this(ConfigFactory.load().getConfig("couchbase-persistence-v2.couchBase"), CouchbaseAccessLayer.getInstance());
     }
 
-    public AkkaPersistenceImpl(Config config) {
+    public AkkaPersistenceImpl(Config config, CouchbaseAccessLayer accessLayer) {
         this.gson = new Gson();
-        couchbaseAccessLayer = CouchbaseAccessLayer.getInstance();
-        Config cfg = config.withFallback(ConfigFactory.load("com/github/akka/couchbase/defaults"));
+
+        couchbaseAccessLayer = accessLayer != null ? accessLayer : new CouchbaseAccessLayer(config);
+        Config cfg = config.withFallback(ConfigFactory.parseResources("com/github/akka/couchbase/defaults.conf").resolve());
         ttl = cfg.getInt("expiryInSeconds");
         operationTimeout = cfg.getInt("operationTimeout");
         maxRetries = cfg.getInt("maxRetries");

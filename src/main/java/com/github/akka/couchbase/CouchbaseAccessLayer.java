@@ -46,7 +46,7 @@ public class CouchbaseAccessLayer {
     }
 
     protected CouchbaseAccessLayer(Config cfg) {
-        Config config = cfg.withFallback(ConfigFactory.load("com/github/akka/couchbase/defaults"));
+        Config config = cfg.withFallback(ConfigFactory.parseResourcesAnySyntax("com/github/akka/couchbase/defaults.conf").resolve());
         loadConfig(config);
         try {
             connect();
