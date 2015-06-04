@@ -340,9 +340,14 @@ public class AkkaPersistenceImpl {
         // Asynchronously remove the binary document, ignore the result
         couchbaseAccessLayer.deleteBinaryDocumentById(SnapshotMetadataEntity.generateId(idPrefix, snapshotMetadata.persistenceId(), snapshotMetadata.sequenceNr()))
                 .timeout(operationTimeout, TimeUnit.MILLISECONDS)
-                .subscribe((n)->  log.debug("delete snapshot success"),
-                        (e)-> log.warn("exception in delete snapshot", e));
-        return;
+                .subscribe(
+                        (n)-> log.debug("delete snapshot success"),
+                        (e)-> {
+                            if (!(e instanceof DocumentDoesNotExistException)) {
+                                log.warn("exception in delete snapshot", e);
+                            }
+                        }
+                );
     }
 
     public void deleteSnapshot(String persistenceId, SnapshotSelectionCriteria snapshotSelectionCriteria) {
